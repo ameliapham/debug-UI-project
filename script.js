@@ -46,4 +46,3 @@ const animation = () =>{
 }
 
 animation()
-
