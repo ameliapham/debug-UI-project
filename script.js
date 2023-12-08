@@ -2,11 +2,30 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import GUI from 'lil-gui'
 import gsap from 'gsap'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+
 
 // Debug
-const gui = new GUI()
-const debugObject = {}
+const gui = new GUI({
+    title : 'Controls My Nice Cube',
+    closeFolders : false
+})
 gui.close()
+/* gui.hide()
+
+window.addEventListener('keydown', (event) => {
+    if (!gui.show & event.key == 'h'){
+        gui.show()
+    } if (gui.show & event.key == 'h'){
+        gui.hide()
+    }
+}) */
+
+
+
+const debugObject = {}
+
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -14,14 +33,26 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-// Object
+// Models
+const loader = new GLTFLoader()
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/');
+loader.setDRACOLoader(dracoLoader);
+
+loader.load('/models/Robot.glb', (gltf) => {
+    scene.add(gltf.scene)
+})
+
+
+/* Object
 debugObject.color = "#eea0dd"
 
 const geometry = new THREE.BoxGeometry(1,1,1,2,2,2)
 const material = new THREE.MeshBasicMaterial({color: debugObject.color, wireframe : true})
 
 const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+scene.add(mesh) 
 
 const scaleCube = gui.addFolder('Scale Cube')
 
@@ -71,7 +102,7 @@ gui
             debugObject.subdivision, debugObject.subdivision, debugObject.subdivision
         )
     })
-
+*/
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight)
 camera.position.z = 3
