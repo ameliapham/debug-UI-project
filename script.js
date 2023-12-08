@@ -17,7 +17,7 @@ const scene = new THREE.Scene()
 debugObject.color = "#eea0dd"
 
 const geometry = new THREE.BoxGeometry(1,1,1,2,2,2)
-const material = new THREE.MeshBasicMaterial({color: debugObject.color})
+const material = new THREE.MeshBasicMaterial({color: debugObject.color, wireframe : true})
 
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
@@ -47,6 +47,20 @@ debugObject.rotation = () => {
 
 gui
     .add(debugObject, 'rotation')
+
+debugObject.subdivision = 2
+gui
+    .add(debugObject, 'subdivision')
+    .min(1)
+    .max(20)
+    .step(1)
+    .onFinishChange(() => {
+        mesh.geometry.dispose()
+        mesh.geometry = new THREE.BoxGeometry(
+            1,1,1,
+            debugObject.subdivision, debugObject.subdivision, debugObject.subdivision
+        )
+    })
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000)
