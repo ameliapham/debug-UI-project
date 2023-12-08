@@ -6,6 +6,7 @@ import gsap from 'gsap'
 // Debug
 const gui = new GUI()
 const debugObject = {}
+gui.close()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -22,12 +23,21 @@ const material = new THREE.MeshBasicMaterial({color: debugObject.color, wirefram
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
-gui
+const scaleCube = gui.addFolder('Scale Cube')
+
+scaleCube
     .add(mesh.scale, 'x')
     .min(-3)
     .max(3)
     .step(0.01)
     .name('scaleX')
+
+scaleCube
+    .add(mesh.scale, 'y')
+    .min(-3)
+    .max(3)
+    .step(0.01)
+    .name('scaleY')
 
 gui
     .add(mesh, 'visible')
@@ -63,7 +73,7 @@ gui
     })
 
 // Camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000)
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight)
 camera.position.z = 3
 scene.add(camera)
 
