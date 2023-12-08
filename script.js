@@ -17,6 +17,7 @@ debugObject.color = "#eea0dd"
 
 const geometry = new THREE.BoxGeometry(1,1,1,2,2,2)
 const material = new THREE.MeshBasicMaterial({color: debugObject.color})
+
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
@@ -38,6 +39,7 @@ gui
     .onChange(() => {
         material.color.set(debugObject.color)
     })
+
  
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000)
