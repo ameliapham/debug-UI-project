@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import GUI from 'lil-gui'
+import gsap from 'gsap'
 
 // Debug
 const gui = new GUI()
@@ -40,7 +41,13 @@ gui
         material.color.set(debugObject.color)
     })
 
- 
+debugObject.rotation = () => {
+    gsap.to(mesh.rotation, {y: mesh.rotation.y + Math.PI, x: mesh.rotation.x + Math.PI})
+}
+
+gui
+    .add(debugObject, 'rotation')
+
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000)
 camera.position.z = 3
