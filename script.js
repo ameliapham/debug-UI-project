@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import GUI from 'lil-gui'
 import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
 
 // Debug
@@ -34,15 +34,27 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 // Models
-const loader = new GLTFLoader()
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('/draco/')
 
-const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('/draco/');
-loader.setDRACOLoader(dracoLoader);
+const gltfLoader = new GLTFLoader()
+gltfLoader.setDRACOLoader(dracoLoader)
 
-loader.load('/models/Robot.glb', (gltf) => {
-    scene.add(gltf.scene)
-})
+let mixer = null
+
+gltfLoader.load(
+    '/models/monRobot.glb',
+    (gltf) =>
+    {
+        gltf.scene.scale.set(0.25, 0.25, 0.25)
+        scene.add(gltf.scene)
+
+        // Animation
+        //mixer = new THREE.AnimationMixer(gltf.scene)
+        //const action = mixer.clipAction(gltf.animations[2])
+        //action.play()
+    }
+)
 
 
 /* Object
