@@ -22,8 +22,6 @@ window.addEventListener('keydown', (event) => {
     }
 }) */
 
-
-
 const debugObject = {}
 
 
@@ -43,7 +41,7 @@ gltfLoader.setDRACOLoader(dracoLoader)
 let mixer = null
 
 gltfLoader.load(
-    '/models/monRobot.glb',
+    '/models/chat/chat.gltf',
     (gltf) =>
     {
         gltf.scene.scale.set(0.25, 0.25, 0.25)
@@ -60,11 +58,11 @@ gltfLoader.load(
 /* Object
 debugObject.color = "#eea0dd"
 
-const geometry = new THREE.BoxGeometry(1,1,1,2,2,2)
-const material = new THREE.MeshBasicMaterial({color: debugObject.color, wireframe : true})
+// const geometry = new THREE.BoxGeometry(1,1,1,2,2,2)
+// const material = new THREE.MeshBasicMaterial({color: debugObject.color, wireframe : true})
 
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh) 
+// const mesh = new THREE.Mesh(geometry, material)
+// scene.add(mesh) 
 
 const scaleCube = gui.addFolder('Scale Cube')
 
@@ -115,6 +113,7 @@ gui
         )
     })
 */
+
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight)
 camera.position.z = 3
