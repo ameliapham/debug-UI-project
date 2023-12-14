@@ -47,6 +47,12 @@ gltfLoader.load(
             }
         });
     });
+
+    // Animation
+    mixer = new THREE.AnimationMixer(gltf.scene)
+        const action = mixer.clipAction(gltf.animations[2])
+        action.play()
+
     }
 )
 
@@ -123,10 +129,23 @@ const renderer = new THREE.WebGLRenderer({
 })
 
 // Animation
+const clock = new THREE.Clock()
+let previousTime = 0
+
 const animation = () =>{
+    const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
+
+    // Model animation
+    if(mixer)
+    {
+        mixer.update(deltaTime)
+    }
     // Controls Update
     controls.update()
 
+    // Render
     renderer.render(scene, camera)
     window.requestAnimationFrame(animation)
 }
