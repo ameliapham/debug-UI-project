@@ -8,7 +8,9 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
  * Base
  */
 // Debug
-const gui = new GUI()
+const gui = new GUI({
+    title : 'Control my nice fox'
+})
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -26,13 +28,25 @@ const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
 
 let mixer = null
+const wireframeFox = { wireframe: false };
 
 gltfLoader.load(
     '/models/Fox/glTF/Fox.gltf',
     (gltf) =>
     {
-        gltf.scene.scale.set(0.025, 0.025, 0.025)
-        scene.add(gltf.scene)
+        gltf.scene.scale.set(0.025, 0.025, 0.025);
+    scene.add(gltf.scene);
+
+    // GUI
+    gui.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
+        
+        // Mettre à jour le wireframe 
+        gltf.scene.traverse((object) => {
+            if (object.isMesh && object.material) {
+                 object.material.wireframe = value;
+            }
+        });
+    });
     }
 )
 
@@ -40,25 +54,26 @@ gltfLoader.load(
  * Floor
  */
 const floor = new THREE.Mesh(
+
     new THREE.PlaneGeometry(10, 10),
     new THREE.MeshStandardMaterial({
         color: '#444444',
         metalness: 0,
         roughness: 0.5
+
     })
 )
 floor.receiveShadow = true
 floor.rotation.x = - Math.PI * 0.5
 scene.add(floor)
 
-/**
- * Lights
-*/
+// Light
 const ambientLight = new THREE.AmbientLight(0xffffff, 2.4)
 scene.add(ambientLight)
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8)
 directionalLight.castShadow = true
+
 directionalLight.shadow.mapSize.set(1024, 1024)
 directionalLight.shadow.camera.far = 15
 directionalLight.shadow.camera.left = - 7
