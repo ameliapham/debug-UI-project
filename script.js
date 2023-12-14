@@ -30,7 +30,7 @@ const wireframeFox = { wireframe: false }
 const animationFox = { run : false }
 
 gltfLoader.load(
-    '/models/Fox/glTF/Fox.gltf',
+    '/models/fox/glTF/Fox.gltf',
     (gltf) =>
     {
         gltf.scene.scale.set(0.025, 0.025, 0.025);
