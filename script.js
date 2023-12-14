@@ -26,7 +26,8 @@ const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
 
 let mixer = null
-const wireframeFox = { wireframe: false };
+const wireframeFox = { wireframe: false }
+const animationFox = { run : false }
 
 gltfLoader.load(
     '/models/Fox/glTF/Fox.gltf',
@@ -45,6 +46,14 @@ gltfLoader.load(
             }
         });
     });
+
+    gui.add(animationFox, 'run').name('Run').onChange((value) => {
+        if (value) {
+            action.play()
+        } else {
+            action.stop()
+        }
+    })
 
     // Animation
     mixer = new THREE.AnimationMixer(gltf.scene)
@@ -123,7 +132,7 @@ const animation = () =>{
     previousTime = elapsedTime
 
     // Model animation
-    if(mixer)
+    if(mixer && animationFox.run)
     {
         mixer.update(deltaTime)
     }
