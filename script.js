@@ -4,9 +4,7 @@ import GUI from 'lil-gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
-/**
- * Base
- */
+
 // Debug
 const gui = new GUI({
     title : 'Control my nice fox'
@@ -56,9 +54,7 @@ gltfLoader.load(
     }
 )
 
-/**
- * Floor
- */
+// Floor
 const floor = new THREE.Mesh(
 
     new THREE.PlaneGeometry(10, 10),
@@ -89,14 +85,6 @@ directionalLight.shadow.camera.bottom = - 7
 directionalLight.position.set(- 5, 5, 0)
 scene.add(directionalLight)
 
-/**
- * Sizes
-
-const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
-}
-*/
 
 window.addEventListener('resize', () =>
 {
@@ -108,9 +96,6 @@ window.addEventListener('resize', () =>
     renderer.setSize(window.innerWidth, window.innerHeight)
 })
 
-/**
- * Camera
- */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100)
 camera.position.set(2, 2, 2)
@@ -121,12 +106,12 @@ const controls = new OrbitControls(camera, canvas)
 controls.target.set(0, 0.75, 0)
 controls.enableDamping = true
 
-/**
- * Renderer
- */
+// Renderer
+
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+renderer.setSize(window.innerWidth, window.innerHeight)
 
 // Animation
 const clock = new THREE.Clock()
