@@ -1,29 +1,14 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-import gsap from 'gsap'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
-
+/**
+ * Base
+ */
 // Debug
-const gui = new GUI({
-    title : 'Controls My Nice Cube',
-    closeFolders : false
-})
-gui.close()
-/* gui.hide()
-
-window.addEventListener('keydown', (event) => {
-    if (!gui.show & event.key == 'h'){
-        gui.show()
-    } if (gui.show & event.key == 'h'){
-        gui.hide()
-    }
-}) */
-
-const debugObject = {}
-
+const gui = new GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -31,7 +16,9 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-// Models
+/**
+ * Models
+ */
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('/draco/')
 
@@ -41,100 +28,84 @@ gltfLoader.setDRACOLoader(dracoLoader)
 let mixer = null
 
 gltfLoader.load(
-    '/models/chat/chat.gltf',
+    '/models/Fox/glTF/Fox.gltf',
     (gltf) =>
     {
-        gltf.scene.scale.set(0.25, 0.25, 0.25)
+        gltf.scene.scale.set(0.025, 0.025, 0.025)
         scene.add(gltf.scene)
-
-        // Animation
-        //mixer = new THREE.AnimationMixer(gltf.scene)
-        //const action = mixer.clipAction(gltf.animations[2])
-        //action.play()
     }
 )
 
-
-/* Object
-debugObject.color = "#eea0dd"
-
-// const geometry = new THREE.BoxGeometry(1,1,1,2,2,2)
-// const material = new THREE.MeshBasicMaterial({color: debugObject.color, wireframe : true})
-
-// const mesh = new THREE.Mesh(geometry, material)
-// scene.add(mesh) 
-
-const scaleCube = gui.addFolder('Scale Cube')
-
-scaleCube
-    .add(mesh.scale, 'x')
-    .min(-3)
-    .max(3)
-    .step(0.01)
-    .name('scaleX')
-
-scaleCube
-    .add(mesh.scale, 'y')
-    .min(-3)
-    .max(3)
-    .step(0.01)
-    .name('scaleY')
-
-gui
-    .add(mesh, 'visible')
-
-gui 
-    .add(material, 'wireframe')
-
-gui
-    .addColor(debugObject, 'color')
-    .onChange(() => {
-        material.color.set(debugObject.color)
+/**
+ * Floor
+ */
+const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(10, 10),
+    new THREE.MeshStandardMaterial({
+        color: '#444444',
+        metalness: 0,
+        roughness: 0.5
     })
+)
+floor.receiveShadow = true
+floor.rotation.x = - Math.PI * 0.5
+scene.add(floor)
 
-debugObject.rotation = () => {
-    gsap.to(mesh.rotation, {y: mesh.rotation.y + Math.PI, x: mesh.rotation.x + Math.PI})
+/**
+ * Lights
+*/
+const ambientLight = new THREE.AmbientLight(0xffffff, 2.4)
+scene.add(ambientLight)
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8)
+directionalLight.castShadow = true
+directionalLight.shadow.mapSize.set(1024, 1024)
+directionalLight.shadow.camera.far = 15
+directionalLight.shadow.camera.left = - 7
+directionalLight.shadow.camera.top = 7
+directionalLight.shadow.camera.right = 7
+directionalLight.shadow.camera.bottom = - 7
+directionalLight.position.set(- 5, 5, 0)
+scene.add(directionalLight)
+
+/**
+ * Sizes
+
+const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
 }
-
-gui
-    .add(debugObject, 'rotation')
-
-debugObject.subdivision = 2
-gui
-    .add(debugObject, 'subdivision')
-    .min(1)
-    .max(20)
-    .step(1)
-    .onFinishChange(() => {
-        mesh.geometry.dispose()
-        mesh.geometry = new THREE.BoxGeometry(
-            1,1,1,
-            debugObject.subdivision, debugObject.subdivision, debugObject.subdivision
-        )
-    })
 */
 
-// Camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight)
-camera.position.z = 3
-scene.add(camera)
-
-window.addEventListener('resize', () => {
-    // Update camera 
+window.addEventListener('resize', () =>
+{
+    // Update camera
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
 
-    // Update renderer 
+    // Update renderer
     renderer.setSize(window.innerWidth, window.innerHeight)
 })
 
+/**
+ * Camera
+ */
+// Base camera
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100)
+camera.position.set(2, 2, 2)
+scene.add(camera)
+
 // Controls
 const controls = new OrbitControls(camera, canvas)
+controls.target.set(0, 0.75, 0)
 controls.enableDamping = true
 
-// Renderer
-const renderer = new THREE.WebGLRenderer({canvas: canvas})
-renderer.setSize(window.innerWidth, window.innerHeight)
+/**
+ * Renderer
+ */
+const renderer = new THREE.WebGLRenderer({
+    canvas: canvas
+})
 
 // Animation
 const animation = () =>{
