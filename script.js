@@ -49,6 +49,7 @@ const animationFox = { run : false }
 const foxSound = new THREE.PositionalAudio(audioListener)
 const audioLoader = new THREE.AudioLoader()
 const soundControl = {sound : false}
+const soundProperties = { volume: 1.0 }
 
 gui.add(soundControl, 'sound').name('Sound').onChange((value) => {
     if (value) {
@@ -58,10 +59,15 @@ gui.add(soundControl, 'sound').name('Sound').onChange((value) => {
     }
 });
 
+gui.add(soundProperties, 'volume', 0, 1, 0.01).name('Volume').onChange((value) => {
+    foxSound.setVolume(value);
+});
+
 audioLoader.load('/models/fox/sound/Fox.mp3', (buffer) => {
     foxSound.setBuffer(buffer)
     foxSound.setRefDistance(20)
     foxSound.setLoop(true)
+    foxSound.setVolume(soundProperties.volume)
 })
 
 gltfLoader.load(
