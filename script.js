@@ -16,9 +16,26 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-/**
- * Models
- */
+window.addEventListener('resize', () =>
+{
+    // Update camera
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+
+    // Update renderer
+    renderer.setSize(window.innerWidth, window.innerHeight)
+})
+
+// Base camera
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100)
+camera.position.set(2, 2, 2)
+scene.add(camera)
+
+// Sound
+const audioListener = new THREE.AudioListener()
+camera.add(audioListener)
+
+// Models
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('/draco/')
 
@@ -29,12 +46,31 @@ let mixer = null
 const wireframeFox = { wireframe: false }
 const animationFox = { run : false }
 
+const foxSound = new THREE.PositionalAudio(audioListener)
+const audioLoader = new THREE.AudioLoader()
+const soundControl = {sound : false}
+
+gui.add(soundControl, 'sound').name('Sound').onChange((value) => {
+    if (value) {
+        foxSound.play();
+    } else {
+        foxSound.pause();
+    }
+});
+
+audioLoader.load('/models/fox/sound/Fox.mp3', (buffer) => {
+    foxSound.setBuffer(buffer)
+    foxSound.setRefDistance(20)
+    foxSound.setLoop(true)
+})
+
 gltfLoader.load(
-    '/models/fox/glTF/Fox.gltf',
-    (gltf) =>
-    {
+    '/models/fox/glTF/Fox.gltf', (gltf) => {
         gltf.scene.scale.set(0.025, 0.025, 0.025);
-    scene.add(gltf.scene);
+        scene.add(gltf.scene);
+
+        // Add sound
+        gltf.scene.add(foxSound)
 
     // GUI
     gui.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
@@ -55,11 +91,11 @@ gltfLoader.load(
         }
     })
 
+    
+
     // Animation
     mixer = new THREE.AnimationMixer(gltf.scene)
         const action = mixer.clipAction(gltf.animations[2])
-        action.play()
-
     }
 )
 
@@ -93,22 +129,6 @@ directionalLight.shadow.camera.right = 7
 directionalLight.shadow.camera.bottom = - 7
 directionalLight.position.set(- 5, 5, 0)
 scene.add(directionalLight)
-
-
-window.addEventListener('resize', () =>
-{
-    // Update camera
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-
-    // Update renderer
-    renderer.setSize(window.innerWidth, window.innerHeight)
-})
-
-// Base camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100)
-camera.position.set(2, 2, 2)
-scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
