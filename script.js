@@ -7,7 +7,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
 // Debug
 const gui = new GUI({
-    title : 'Control my nice fox'
+    title : 'Control'
 })
 
 // Canvas
@@ -43,15 +43,17 @@ const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
 
 let mixer = null
+const foxFolder = gui.addFolder('Control My Nice Fox')
 const wireframeFox = { wireframe: false }
 const animationFox = { run : false }
 
+const soundFolder = gui.addFolder('Control Sound')
 const foxSound = new THREE.PositionalAudio(audioListener)
 const audioLoader = new THREE.AudioLoader()
 const soundControl = {sound : false}
 const soundProperties = { volume: 1.0 }
 
-gui.add(soundControl, 'sound').name('Sound').onChange((value) => {
+soundFolder.add(soundControl, 'sound').name('Sound').onChange((value) => {
     if (value) {
         foxSound.play();
     } else {
@@ -59,7 +61,7 @@ gui.add(soundControl, 'sound').name('Sound').onChange((value) => {
     }
 });
 
-gui.add(soundProperties, 'volume', 0, 1, 0.01).name('Volume').onChange((value) => {
+soundFolder.add(soundProperties, 'volume', 0, 1, 0.01).name('Volume').onChange((value) => {
     foxSound.setVolume(value);
 });
 
@@ -78,8 +80,8 @@ gltfLoader.load(
         // Add sound
         gltf.scene.add(foxSound)
 
-    // GUI
-    gui.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
+        // GUI
+        foxFolder.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
         
         // Mettre à jour le wireframe 
         gltf.scene.traverse((object) => {
@@ -89,13 +91,15 @@ gltfLoader.load(
         });
     });
 
-    gui.add(animationFox, 'run').name('Run').onChange((value) => {
+    foxFolder.add(animationFox, 'run').name('Run').onChange((value) => {
         if (value) {
             action.play()
         } else {
             action.stop()
         }
     })
+
+
 
     
 
