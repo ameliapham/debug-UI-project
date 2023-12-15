@@ -65,7 +65,7 @@ soundFolder.add(soundProperties, 'volume', 0, 1, 0.01).name('Volume').onChange((
     foxSound.setVolume(value);
 });
 
-audioLoader.load('/models/fox/sound/Fox.mp3', (buffer) => {
+audioLoader.load('/models/fox/sound/The-fox-remix.mp3', (buffer) => {
     foxSound.setBuffer(buffer)
     foxSound.setRefDistance(20)
     foxSound.setLoop(true)
@@ -98,10 +98,6 @@ gltfLoader.load(
             action.stop()
         }
     })
-
-
-
-    
 
     // Animation
     mixer = new THREE.AnimationMixer(gltf.scene)
