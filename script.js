@@ -28,7 +28,7 @@ window.addEventListener('resize', () =>
 
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100)
-camera.position.set(2, 2, 2)
+camera.position.set(5, 5, 8)
 scene.add(camera)
 
 // Add AudioListener
@@ -141,6 +141,10 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
     if (sounds['Boggis Bunce Bean Remix']) gltf.scene.add(sounds['Boggis Bunce Bean Remix'])
 
     // GUI
+    foxFolder.add(gltf.scene.scale, 'x', 0.025, 0.1).name('Scale X')
+    foxFolder.add(gltf.scene.scale, 'y', 0.025, 0.1).name('Scale Y')
+    foxFolder.add(gltf.scene.scale, 'z', 0.025, 0.1).name('Scale Z')
+
     foxFolder.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
         // Mettre à jour le wireframe 
         gltf.scene.traverse((object) => {
@@ -149,13 +153,6 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
             }
         });
     });
-    foxFolder.add(animationFox, 'run').name('Run').onChange((value) => {
-        if (value) {
-            action.play()
-        } else {
-            action.stop()
-        }
-    })
     foxFolder.add(shadowControl, 'castShadow').name('Shadow').onChange((value) => {
         gltf.scene.traverse((object) => {
             if (object.isMesh) {
@@ -163,6 +160,14 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
             }
         })
     })
+    foxFolder.add(animationFox, 'run').name('Run').onChange((value) => {
+        if (value) {
+            action.play()
+        } else {
+            action.stop()
+        }
+    })
+   
 
     // Animation
     mixer = new THREE.AnimationMixer(gltf.scene)
