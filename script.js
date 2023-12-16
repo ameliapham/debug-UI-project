@@ -126,6 +126,12 @@ gltfLoader.load(
     '/models/fox/glTF/Fox.gltf', (gltf) => {
         gltf.scene.scale.set(0.025, 0.025, 0.025);
         scene.add(gltf.scene);
+        // Enable shadow casting for object
+        gltf.scene.traverse((object) => {
+            if (object.isMesh) {
+                object.castShadow = true
+            }
+        })
 
         // Add sound
         if (sounds['The Fox Remix']) gltf.scene.add(sounds['The Fox Remix'])
@@ -198,6 +204,7 @@ const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
 renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.shadowMap.enabled = true
 
 // Animation
 const clock = new THREE.Clock()
