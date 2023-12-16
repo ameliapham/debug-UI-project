@@ -50,6 +50,9 @@ const animationFox = { run : false }
 // Add shadow control to model
 const shadowControl = {castShadow : true}
 
+// Add speed control 
+const animationSpeed = {speed: 1.0}
+
 // Add Sounds
 const soundControl = {sound : false} // This controls whether sound is playing
 const soundPlaylist = {song : 'The Fox Remix'} // This selects the current song
@@ -141,10 +144,12 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
     if (sounds['Boggis Bunce Bean Remix']) gltf.scene.add(sounds['Boggis Bunce Bean Remix'])
 
     // GUI
+    // Scale
     foxFolder.add(gltf.scene.scale, 'x', 0.025, 0.1).name('Scale X')
     foxFolder.add(gltf.scene.scale, 'y', 0.025, 0.1).name('Scale Y')
     foxFolder.add(gltf.scene.scale, 'z', 0.025, 0.1).name('Scale Z')
 
+    // Wireframe
     foxFolder.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
         // Mettre à jour le wireframe 
         gltf.scene.traverse((object) => {
@@ -153,6 +158,7 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
             }
         });
     });
+    // Shadow
     foxFolder.add(shadowControl, 'castShadow').name('Shadow').onChange((value) => {
         gltf.scene.traverse((object) => {
             if (object.isMesh) {
@@ -160,6 +166,7 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
             }
         })
     })
+    // Animation 'Run'
     foxFolder.add(animationFox, 'run').name('Run').onChange((value) => {
         if (value) {
             action.play()
@@ -167,11 +174,18 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
             action.stop()
         }
     })
-   
+
+    // Animation Speed
+    foxFolder.add(animationSpeed, 'speed', 0.1, 3.0, 0.1).name('Animation Speed').onChange((value) => {
+        if (action) {
+            action.setEffectiveTimeScale(value)
+        }
+    })
 
     // Animation
     mixer = new THREE.AnimationMixer(gltf.scene)
         const action = mixer.clipAction(gltf.animations[2])
+        action.setEffectiveTimeScale(animationSpeed.speed)
     }
 )
 
@@ -227,6 +241,11 @@ const animation = () =>{
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
+
+    // Speed
+    if (mixer && animationFox.run) {
+        mixer.update(deltaTime * animationSpeed.speed)
+    }
 
     // Model animation
     if(mixer && animationFox.run)
