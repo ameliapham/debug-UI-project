@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
 
-// Debug
+// GUI
 const gui = new GUI({
     title : 'Control'
 })
@@ -46,6 +46,9 @@ let mixer = null
 const foxFolder = gui.addFolder('Control My Nice Fox')
 const wireframeFox = { wireframe: false }
 const animationFox = { run : false }
+
+// Add shadow control to model
+const shadowControl = {castShadow : true}
 
 // Add Sounds
 const soundControl = {sound : false} // This controls whether sound is playing
@@ -122,38 +125,43 @@ audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
 })
 
 // Update Models
-gltfLoader.load(
-    '/models/fox/glTF/Fox.gltf', (gltf) => {
-        gltf.scene.scale.set(0.025, 0.025, 0.025);
-        scene.add(gltf.scene);
-        // Enable shadow casting for object
-        gltf.scene.traverse((object) => {
-            if (object.isMesh) {
-                object.castShadow = true
-            }
-        })
+gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
+    gltf.scene.scale.set(0.025, 0.025, 0.025);
+    scene.add(gltf.scene);   
 
-        // Add sound
-        if (sounds['The Fox Remix']) gltf.scene.add(sounds['The Fox Remix'])
-        if (sounds['Boggis Bunce Bean Remix']) gltf.scene.add(sounds['Boggis Bunce Bean Remix'])
+    // Add shadow situation for each mesh in the models
+    gltf.scene.traverse((object) => {
+        if (object.isMesh) {
+            object.castShadow = shadowControl.castShadow
+        }
+    })
 
-        // GUI
-        foxFolder.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
-        
+    // Add sound
+    if (sounds['The Fox Remix']) gltf.scene.add(sounds['The Fox Remix'])
+    if (sounds['Boggis Bunce Bean Remix']) gltf.scene.add(sounds['Boggis Bunce Bean Remix'])
+
+    // GUI
+    foxFolder.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
         // Mettre à jour le wireframe 
         gltf.scene.traverse((object) => {
             if (object.isMesh && object.material) {
-                 object.material.wireframe = value;
+                    object.material.wireframe = value;
             }
         });
     });
-
     foxFolder.add(animationFox, 'run').name('Run').onChange((value) => {
         if (value) {
             action.play()
         } else {
             action.stop()
         }
+    })
+    foxFolder.add(shadowControl, 'castShadow').name('Shadow').onChange((value) => {
+        gltf.scene.traverse((object) => {
+            if (object.isMesh) {
+                object.castShadow = value // Enable shadow casting for object
+            }
+        })
     })
 
     // Animation
