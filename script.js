@@ -112,6 +112,20 @@ soundFolder.add(soundProperties, 'volume', 0, 1, 0.01).name('Volume').onChange((
 
 const audioLoader = new THREE.AudioLoader()
 
+// Synchronize animation speed and tempo
+let action = null
+let currentBPM = 120
+let conversionFactor = null
+function updateAnimationSpeed() {
+    const baseBPM = 120
+    conversionFactor = animationSpeed.speed / baseBPM
+    let newSpeed = currentBPM * conversionFactor
+
+    if (action) {
+        action.setEffectiveTimeScale(newSpeed)
+    }
+}
+
 audioLoader.load('/models/fox/sound/The-fox-remix.mp3', (buffer) => {
     sounds['The Fox Remix'] = new THREE.PositionalAudio(audioListener)
     sounds['The Fox Remix'].setBuffer(buffer)
@@ -121,6 +135,8 @@ audioLoader.load('/models/fox/sound/The-fox-remix.mp3', (buffer) => {
 
     analyze(buffer).then((bpm) => {
         console.log('Le tempo Fox est de :' + bpm)
+        currentBPM = bpm
+        updateAnimationSpeed()
     })
 })
 
@@ -133,8 +149,13 @@ audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
 
     analyze(buffer).then((bpm) => {
         console.log('Le tempo Boggis est de :' + bpm)
-    })
 
+        animationSpeed.speed = bpm * conversionFactor
+
+        if (action) {
+            action.setEffectiveTimeScale(animationSpeed.speed)
+        }
+    })
 })
 
 // Update Models
@@ -187,17 +208,18 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
 
     // Animation Speed
     foxFolder.add(animationSpeed, 'speed', 0.1, 3.0, 0.1).name('Animation Speed').onChange((value) => {
-        if (action) {
+        updateAnimationSpeed()
+    
+    /*    if (action) {
             action.setEffectiveTimeScale(value)
-        }
+        }*/
     })
 
     // Animation
     mixer = new THREE.AnimationMixer(gltf.scene)
-        const action = mixer.clipAction(gltf.animations[2])
-        action.setEffectiveTimeScale(animationSpeed.speed)
-    }
-)
+    action = mixer.clipAction(gltf.animations[2])
+    action.setEffectiveTimeScale(animationSpeed.speed)
+})
 
 // Floor
 const floor = new THREE.Mesh(
