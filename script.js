@@ -66,20 +66,29 @@ soundFolder.add(soundControl, 'sound').name('Active Sound').onChange((value) => 
             sounds[soundPlaylist.song].play()
         }
     } else {
-        if (sounds[soundPlaylist.song] && sounds[soundPlaylist.song].isPlaying) {
-            sounds[soundPlaylist.song].pause()
-        }
+        Object.keys(sounds).forEach(key => {
+            if (sounds[key] && sounds[key].isPlaying) {
+                sounds[key].pause()
+            }
+        })
     }
 });
 
 // Stop the current sound ans switch to the new one
 soundFolder.add(soundPlaylist, 'song', Object.keys(sounds)).name('Sound').onChange((value) => {
+    // Stop current song
     if (sounds[soundPlaylist.song] && sounds[soundPlaylist.song].isPlaying) {
         sounds[soundPlaylist.song].stop()
     }
+
+    // Update the current song
     soundPlaylist.song = value;
+
+    // Play nouvelle song if the sound is actived
     if (soundControl.sound) {
-        sounds[soundPlaylist.song].play();
+        if (sounds[soundPlaylist.song] && !sounds[soundPlaylist.song].isPlaying) {
+            sounds[soundPlaylist.song].play();
+        }
     }
 });
 
