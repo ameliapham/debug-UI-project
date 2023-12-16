@@ -191,8 +191,7 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
 
 // Floor
 const floor = new THREE.Mesh(
-
-    new THREE.PlaneGeometry(10, 10),
+    new THREE.PlaneGeometry(100, 100),
     new THREE.MeshStandardMaterial({
         color: '#444444',
         metalness: 0,
@@ -219,6 +218,11 @@ directionalLight.shadow.camera.right = 7
 directionalLight.shadow.camera.bottom = - 7
 directionalLight.position.set(- 5, 5, 0)
 scene.add(directionalLight)
+
+// Add spotlightHelper
+const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
+scene.add(directionalLightHelper);
+
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
@@ -254,6 +258,9 @@ const animation = () =>{
     }
     // Controls Update
     controls.update()
+
+    // Update spotlightHelper 
+    directionalLightHelper.update()
 
     // Render
     renderer.render(scene, camera)
