@@ -74,19 +74,21 @@ soundFolder.add(soundControl, 'sound').name('Active Sound').onChange((value) => 
     }
 });
 
-// Stop the current sound ans switch to the new one
+// Control to change the song
 soundFolder.add(soundPlaylist, 'song', Object.keys(sounds)).name('Sound').onChange((value) => {
     // Stop current song
-    if (sounds[soundPlaylist.song] && sounds[soundPlaylist.song].isPlaying) {
-        sounds[soundPlaylist.song].stop()
-    }
+    Object.keys(sounds).forEach(key => {
+        if (sounds[key] && sounds[key].isPlaying) {
+            sounds[key].stop();
+        }
+    });
 
     // Update the current song
     soundPlaylist.song = value;
 
-    // Play nouvelle song if the sound is actived
+    // Play nouvelle song (only if the checkbox sound is actived)
     if (soundControl.sound) {
-        if (sounds[soundPlaylist.song] && !sounds[soundPlaylist.song].isPlaying) {
+        if (sounds[soundPlaylist.song]) {
             sounds[soundPlaylist.song].play();
         }
     }
@@ -119,6 +121,7 @@ audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
     sounds['Boggis Bunce Bean Remix'].setVolume(soundProperties.volume)
 })
 
+// Update Models
 gltfLoader.load(
     '/models/fox/glTF/Fox.gltf', (gltf) => {
         gltf.scene.scale.set(0.025, 0.025, 0.025);
