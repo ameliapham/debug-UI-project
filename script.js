@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { analyze } from 'web-audio-beat-detector'
 
 
 // GUI
@@ -117,6 +118,10 @@ audioLoader.load('/models/fox/sound/The-fox-remix.mp3', (buffer) => {
     sounds['The Fox Remix'].setRefDistance(20)
     sounds['The Fox Remix'].setLoop(true)
     sounds['The Fox Remix'].setVolume(soundProperties.volume)
+
+    analyze(buffer).then((bpm) => {
+        console.log('Le tempo Fox est de :' + bpm)
+    })
 })
 
 audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
@@ -125,6 +130,11 @@ audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
     sounds['Boggis Bunce Bean Remix'].setRefDistance(20)
     sounds['Boggis Bunce Bean Remix'].setLoop(true)
     sounds['Boggis Bunce Bean Remix'].setVolume(soundProperties.volume)
+
+    analyze(buffer).then((bpm) => {
+        console.log('Le tempo Boggis est de :' + bpm)
+    })
+
 })
 
 // Update Models
