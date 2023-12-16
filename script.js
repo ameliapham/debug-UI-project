@@ -31,7 +31,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 camera.position.set(2, 2, 2)
 scene.add(camera)
 
-// Sound
+// Add AudioListener
 const audioListener = new THREE.AudioListener()
 camera.add(audioListener)
 
@@ -47,29 +47,67 @@ const foxFolder = gui.addFolder('Control My Nice Fox')
 const wireframeFox = { wireframe: false }
 const animationFox = { run : false }
 
-const soundFolder = gui.addFolder('Control Sound')
-const foxSound = new THREE.PositionalAudio(audioListener)
-const audioLoader = new THREE.AudioLoader()
-const soundControl = {sound : false}
-const soundProperties = { volume: 1.0 }
+// Add Sounds
+const soundControl = {sound : false} // This controls whether sound is playing
+const soundPlaylist = {song : 'The Fox Remix'} // This selects the current song
+const soundProperties = { volume: 1.0 } // This controls the volume
 
-soundFolder.add(soundControl, 'sound').name('Sound').onChange((value) => {
+const sounds = {
+    'The Fox Remix' : null,
+    'Boggis Bunce Bean Remix' : null
+}
+
+const soundFolder = gui.addFolder('Control Sound') // Create folder GUI to control sound
+
+// Add checkbox GUI to active sound
+soundFolder.add(soundControl, 'sound').name('Active Sound').onChange((value) => {
     if (value) {
-        foxSound.play();
+        if (sounds[soundPlaylist.song] && !sounds[soundPlaylist.song].isPlaying) {
+            sounds[soundPlaylist.song].play()
+        }
     } else {
-        foxSound.pause();
+        if (sounds[soundPlaylist.song] && sounds[soundPlaylist.song].isPlaying) {
+            sounds[soundPlaylist.song].pause()
+        }
     }
 });
 
-soundFolder.add(soundProperties, 'volume', 0, 1, 0.01).name('Volume').onChange((value) => {
-    foxSound.setVolume(value);
+// Stop the current sound ans switch to the new one
+soundFolder.add(soundPlaylist, 'song', Object.keys(sounds)).name('Sound').onChange((value) => {
+    if (sounds[soundPlaylist.song] && sounds[soundPlaylist.song].isPlaying) {
+        sounds[soundPlaylist.song].stop()
+    }
+    soundPlaylist.song = value;
+    if (soundControl.sound) {
+        sounds[soundPlaylist.song].play();
+    }
 });
 
+// Control the volume 
+soundFolder.add(soundProperties, 'volume', 0, 1, 0.01).name('Volume').onChange((value) => {
+    for (let key in sounds) {
+        if (sounds[key]) {
+            sounds[key].setVolume(value);
+        }
+    }
+});
+
+const audioLoader = new THREE.AudioLoader()
+
 audioLoader.load('/models/fox/sound/The-fox-remix.mp3', (buffer) => {
-    foxSound.setBuffer(buffer)
-    foxSound.setRefDistance(20)
-    foxSound.setLoop(true)
-    foxSound.setVolume(soundProperties.volume)
+    sounds['The Fox Remix'] = new THREE.PositionalAudio(audioListener)
+    sounds['The Fox Remix'].setBuffer(buffer)
+    sounds['The Fox Remix'].setRefDistance(20)
+    sounds['The Fox Remix'].setLoop(true)
+    sounds['The Fox Remix'].setVolume(soundProperties.volume)
+})
+
+audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
+    sounds['Boggis Bunce Bean Remix'] = new THREE.PositionalAudio(audioListener)
+    sounds['Boggis Bunce Bean Remix'].setBuffer(buffer)
+    sounds['Boggis Bunce Bean Remix'].setRefDistance(20)
+    sounds['Boggis Bunce Bean Remix'].setLoop(true)
+    sounds['Boggis Bunce Bean Remix'].setVolume(soundProperties.volume)
 })
 
 gltfLoader.load(
@@ -78,7 +116,8 @@ gltfLoader.load(
         scene.add(gltf.scene);
 
         // Add sound
-        gltf.scene.add(foxSound)
+        if (sounds['The Fox Remix']) gltf.scene.add(sounds['The Fox Remix'])
+        if (sounds['Boggis Bunce Bean Remix']) gltf.scene.add(sounds['Boggis Bunce Bean Remix'])
 
         // GUI
         foxFolder.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
