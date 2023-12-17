@@ -222,6 +222,13 @@ scene.add(directionalLight)
 // Add spotlightHelper
 const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
 scene.add(directionalLightHelper);
+directionalLightHelper.visible = false
+
+const lightHelper = {showDirectionalLightHelper : false}
+const lightFolder = gui.addFolder('Control Light')
+lightFolder.add(lightHelper, 'showDirectionalLightHelper').name('Light Helper').onChange((value) => {
+    directionalLightHelper.visible = value
+})
 
 
 // Controls
