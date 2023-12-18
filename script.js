@@ -193,7 +193,7 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
 const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(100, 100),
     new THREE.MeshStandardMaterial({
-        color: '#444444',
+        color: '#000000',
         metalness: 0,
         roughness: 0.5
 
