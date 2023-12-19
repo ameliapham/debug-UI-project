@@ -27,7 +27,7 @@ window.addEventListener('resize', () =>
 })
 
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 camera.position.set(5, 5, 8)
 scene.add(camera)
 
@@ -216,18 +216,25 @@ const floorVideoTexture = new THREE.VideoTexture(floorVideo)
 floorVideoTexture.minFilter = THREE.LinearFilter
 floorVideoTexture.magFilter = THREE.LinearFilter
 floorVideoTexture.format = THREE.RGBAFormat 
+floorVideoTexture.wrapS = THREE.ClampToEdgeWrapping;
+floorVideoTexture.wrapT = THREE.ClampToEdgeWrapping;
+floorVideoTexture.repeat.set(1, 1);
 
-const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(100, 100),
-    new THREE.MeshStandardMaterial({
-        map : floorVideoTexture,
-        metalness : 0,
-        roughness : 0.5
+floorVideo.addEventListener('loadeddata', () => {
+    const aspectVideo = floorVideo.videoWidth / floorVideo.videoHeight;
+    const floorGeometry = new THREE.PlaneGeometry(100, 100 / aspectVideo);
+    const floorMaterial = new THREE.MeshStandardMaterial({
+        map: floorVideoTexture,
+        metalness: 0,
+        roughness: 0.5
     })
-)
-floor.receiveShadow = true
-floor.rotation.x = - Math.PI * 0.5
-scene.add(floor)
+    const floor = new THREE.Mesh( floorGeometry, floorMaterial)
+    floor.receiveShadow = true
+    floor.rotation.x = - Math.PI * 0.5
+    scene.add(floor)
+})
+
+
 
 // Light
 const ambientLight = new THREE.AmbientLight(0xffffff, 2.4)
