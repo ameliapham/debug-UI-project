@@ -190,13 +190,15 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
 )
 
 // Floor
+const textureLoader = new THREE.TextureLoader()
+const floorTexture = textureLoader.load('/models/floor/Grass.jpg')
+
 const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(100, 100),
+    new THREE.PlaneGeometry(10, 10),
     new THREE.MeshStandardMaterial({
-        color: '#000000',
+        map: floorTexture,
         metalness: 0,
         roughness: 0.5
-
     })
 )
 floor.receiveShadow = true
