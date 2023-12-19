@@ -189,7 +189,7 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
     }
 )
 
-// Floor
+/* Floor
 const textureLoader = new THREE.TextureLoader()
 const floorTexture = textureLoader.load('/models/floor/Grass.jpg')
 
@@ -199,6 +199,30 @@ const floor = new THREE.Mesh(
         map: floorTexture,
         metalness: 0,
         roughness: 0.5
+    })
+)
+floor.receiveShadow = true
+floor.rotation.x = - Math.PI * 0.5
+scene.add(floor) */
+
+// Floor vidéo
+const floorVideo = document.createElement('video')
+floorVideo.src = '/models/floor/Beach.webm'
+floorVideo.load()
+floorVideo.play()
+floorVideo.loop = true
+
+const floorVideoTexture = new THREE.VideoTexture(floorVideo)
+floorVideoTexture.minFilter = THREE.LinearFilter
+floorVideoTexture.magFilter = THREE.LinearFilter
+floorVideoTexture.format = THREE.RGBAFormat 
+
+const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(100, 100),
+    new THREE.MeshStandardMaterial({
+        map : floorVideoTexture,
+        metalness : 0,
+        roughness : 0.5
     })
 )
 floor.receiveShadow = true
@@ -270,6 +294,11 @@ const animation = () =>{
 
     // Update spotlightHelper 
     directionalLightHelper.update()
+
+    // Update video floor
+    if (floorVideo.readyState === floorVideo.HAVE_ENOUGH_DATA) {
+        floorVideoTexture.needsUpdate = true;
+    }
 
     // Render
     renderer.render(scene, camera)
