@@ -129,7 +129,7 @@ audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
 
 // Update Models
 gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
-    gltf.scene.scale.set(0.025, 0.025, 0.025);
+    gltf.scene.scale.set(0.03, 0.03, 0.03);
     scene.add(gltf.scene);   
 
     // Add shadow situation for each mesh in the models
@@ -205,7 +205,7 @@ floor.receiveShadow = true
 floor.rotation.x = - Math.PI * 0.5
 scene.add(floor) */
 
-// Floor vidéo
+// Floor video
 const floorVideo = document.createElement('video')
 floorVideo.src = '/models/floor/Beach.webm'
 floorVideo.load()
