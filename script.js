@@ -28,7 +28,7 @@ window.addEventListener('resize', () =>
 
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-camera.position.set(10, 6, 20)
+camera.position.set(12, 10, 20)
 scene.add(camera)
 
 // Add AudioListener
@@ -129,7 +129,7 @@ audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
 
 // Update Models
 gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
-    gltf.scene.scale.set(0.1, 0.1, 0.1);
+    gltf.scene.scale.set(0.08, 0.08, 0.08);
     scene.add(gltf.scene);   
 
     // Add shadow situation for each mesh in the models
@@ -211,15 +211,12 @@ floorVideo.src = '/models/floor/Earth.webm'
 floorVideo.load()
 floorVideo.play()
 floorVideo.loop = true
+floorVideo.muted = true
 
 const floorVideoTexture = new THREE.VideoTexture(floorVideo)
 floorVideoTexture.minFilter = THREE.LinearFilter
 floorVideoTexture.magFilter = THREE.LinearFilter
 floorVideoTexture.format = THREE.RGBAFormat 
-
-/* floorVideoTexture.wrapS = THREE.ClampToEdgeWrapping;
-floorVideoTexture.wrapT = THREE.ClampToEdgeWrapping;
-floorVideoTexture.repeat.set(1, 1); */
 
 const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(100, 100),
