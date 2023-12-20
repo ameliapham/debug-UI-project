@@ -189,7 +189,7 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
     }
 )
 
-/* Floor
+/* Floor image
 const textureLoader = new THREE.TextureLoader()
 const floorTexture = textureLoader.load('/models/floor/Grass.jpg')
 
@@ -206,22 +206,39 @@ floor.rotation.x = - Math.PI * 0.5
 scene.add(floor) */
 
 // Floor video
-const floorVideo = document.createElement('video')
-floorVideo.src = '/models/floor/Earth.webm'
-floorVideo.load()
-floorVideo.play()
-floorVideo.loop = true
-floorVideo.muted = true
+const earthVideo = document.createElement('video')
+earthVideo.src = '/models/floor/Earth.webm'
+earthVideo.load()
+earthVideo.play()
+earthVideo.loop = true
+earthVideo.muted = true
 
-const floorVideoTexture = new THREE.VideoTexture(floorVideo)
-floorVideoTexture.minFilter = THREE.LinearFilter
-floorVideoTexture.magFilter = THREE.LinearFilter
-floorVideoTexture.format = THREE.RGBAFormat 
+const galaxyVideo = document.createElement('video')
+galaxyVideo.src = '/models/floor/Galaxy.webm'
+galaxyVideo.load()
+galaxyVideo.play()
+galaxyVideo.loop = true
+galaxyVideo.muted = true
+
+const beachVideo = document.createElement('video')
+beachVideo.src = '/models/floor/Beach.webm'
+beachVideo.load()
+beachVideo.play()
+beachVideo.loop = true
+beachVideo.muted = true
+
+const textures = {
+    Sand: new THREE.TextureLoader().load('/models/floor/Sand.jpg'),
+    Grass: new THREE.TextureLoader().load('/models/floor/Grass.jpg'),
+    Earth: new THREE.VideoTexture(earthVideo),
+    Galaxy: new THREE.VideoTexture(galaxyVideo),
+    Beach: new THREE.VideoTexture(beachVideo)
+}
 
 const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(100, 100),
     new THREE.MeshStandardMaterial({
-        map: floorVideoTexture,
+        map: textures['Sand'],
         metalness: 0,
         roughness: 0.5
     })
@@ -230,18 +247,32 @@ floor.receiveShadow = true
     floor.rotation.x = - Math.PI * 0.5
     scene.add(floor)
 
-floorVideo.addEventListener('loadeddata', () => {
-    const aspectVideo = floorVideo.videoWidth / floorVideo.videoHeight;
-    if (aspectVideo > 1) {
-        floorVideoTexture.repeat.set(1/aspectVideo, 1)
-        floorVideoTexture.offset.set((1 - (1 / aspectVideo)) / 2, 0);
-    } else {
-        floorVideoTexture.repeat.set(1, aspectVideo);
-        floorVideoTexture.offset.set(0, (1 - aspectVideo) / 2);
+const floorFolder = gui.addFolder('Control Floor')
+const floorControls = {
+    texture : 'Sand'
+}
+floorFolder.add(floorControls, 'Texture', ['Sand', 'Grass', 'Earth', 'Galaxy', 'Beach']).onChange((value) => {
+    floor.material.map = textures[value]
+    floor.material.needsUpdate = true
+    // For videos, reset texture properties
+    if (value === 'Earth' || value === 'Galaxy' || value === 'Beach') {
+        const video = textures[value].image
+        textures[value].minFilter = THREE.LinearFilter
+        textures[value].magFilter = THREE.LinearFilter
+        textures[value].format = THREE.RGBAFormat
+
+        video.addEventListener('loadeddata', () => {
+            const aspectVideo = video.videoWidth / video.videoHeight
+            if (aspectVideo > 1) {
+                textures[value].repeat.set(1 / aspectVideo, 1)
+                textures[value].offset.set((1 - (1 / aspectVideo)) / 2, 0)
+            } else {
+                textures[value].repeat.set(1, aspectVideo)
+                textures[value].offset.set(0, (1 - aspectVideo) / 2)
+            }
+        })
     }
 })
-
-
 
 // Light
 const ambientLight = new THREE.AmbientLight(0xffffff, 2.4)
@@ -310,8 +341,11 @@ const animation = () =>{
     directionalLightHelper.update()
 
     // Update video floor
-    if (floorVideo.readyState === floorVideo.HAVE_ENOUGH_DATA) {
-        floorVideoTexture.needsUpdate = true;
+    if (floorControls.texture === 'Earth' || floorControls.texture === 'Galaxy' || floorControls.texture === 'Beach') {
+        const video = textures[floorControls.texture].image;
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            textures[floorControls.texture].needsUpdate = true;
+        }
     }
 
     // Render
