@@ -207,7 +207,7 @@ scene.add(floor) */
 
 // Floor video
 const floorVideo = document.createElement('video')
-floorVideo.src = '/models/floor/Beach.webm'
+floorVideo.src = '/models/floor/Galaxy.webm'
 floorVideo.load()
 floorVideo.play()
 floorVideo.loop = true
@@ -216,22 +216,32 @@ const floorVideoTexture = new THREE.VideoTexture(floorVideo)
 floorVideoTexture.minFilter = THREE.LinearFilter
 floorVideoTexture.magFilter = THREE.LinearFilter
 floorVideoTexture.format = THREE.RGBAFormat 
-floorVideoTexture.wrapS = THREE.ClampToEdgeWrapping;
-floorVideoTexture.wrapT = THREE.ClampToEdgeWrapping;
-floorVideoTexture.repeat.set(1, 1);
 
-floorVideo.addEventListener('loadeddata', () => {
-    const aspectVideo = floorVideo.videoWidth / floorVideo.videoHeight;
-    const floorGeometry = new THREE.PlaneGeometry(100, 100 / aspectVideo);
-    const floorMaterial = new THREE.MeshStandardMaterial({
+/* floorVideoTexture.wrapS = THREE.ClampToEdgeWrapping;
+floorVideoTexture.wrapT = THREE.ClampToEdgeWrapping;
+floorVideoTexture.repeat.set(1, 1); */
+
+const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(100, 100),
+    new THREE.MeshStandardMaterial({
         map: floorVideoTexture,
         metalness: 0,
         roughness: 0.5
     })
-    const floor = new THREE.Mesh( floorGeometry, floorMaterial)
-    floor.receiveShadow = true
+)
+floor.receiveShadow = true
     floor.rotation.x = - Math.PI * 0.5
     scene.add(floor)
+
+floorVideo.addEventListener('loadeddata', () => {
+    const aspectVideo = floorVideo.videoWidth / floorVideo.videoHeight;
+    if (aspectVideo > 1) {
+        floorVideoTexture.repeat.set(1/aspectVideo, 1)
+        floorVideoTexture.offset.set((1 - (1 / aspectVideo)) / 2, 0);
+    } else {
+        floorVideoTexture.repeat.set(1, aspectVideo);
+        floorVideoTexture.offset.set(0, (1 - aspectVideo) / 2);
+    }
 })
 
 
