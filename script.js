@@ -251,7 +251,7 @@ const floorFolder = gui.addFolder('Control Floor')
 const floorControls = {
     texture : 'Sand'
 }
-floorFolder.add(floorControls, 'Texture', ['Sand', 'Grass', 'Earth', 'Galaxy', 'Beach']).onChange((value) => {
+floorFolder.add(floorControls, 'texture', ['Sand', 'Grass', 'Earth', 'Galaxy', 'Beach']).name('Texture').onChange((value) => {
     floor.material.map = textures[value]
     floor.material.needsUpdate = true
     // For videos, reset texture properties
@@ -341,9 +341,20 @@ const animation = () =>{
     directionalLightHelper.update()
 
     // Update video floor
-    if (floorControls.texture === 'Earth' || floorControls.texture === 'Galaxy' || floorControls.texture === 'Beach') {
+    if (['Earth', 'Galaxy', 'Beach'].includes(floorControls.texture)) {
         const video = textures[floorControls.texture].image;
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            if (!textures[floorControls.texture].__initialized || textures[floorControls.texture].needsUpdate) {
+                const aspectVideo = video.videoWidth / video.videoHeight;
+                if (aspectVideo > 1) {
+                    textures[floorControls.texture].repeat.set(1 / aspectVideo, 1);
+                    textures[floorControls.texture].offset.set((1 - (1 / aspectVideo)) / 2, 0);
+                } else {
+                    textures[floorControls.texture].repeat.set(1, aspectVideo);
+                    textures[floorControls.texture].offset.set(0, (1 - aspectVideo) / 2);
+                }
+                textures[floorControls.texture].__initialized = true;
+            }
             textures[floorControls.texture].needsUpdate = true;
         }
     }
