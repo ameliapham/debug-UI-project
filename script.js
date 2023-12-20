@@ -238,7 +238,8 @@ const textures = {
 const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(100, 100),
     new THREE.MeshStandardMaterial({
-        map: textures['Sand'],
+        //map: textures['Sand'],
+        color: 'pink',
         metalness: 0,
         roughness: 0.5
     })
