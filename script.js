@@ -28,7 +28,7 @@ window.addEventListener('resize', () =>
 
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-camera.position.set(5, 5, 8)
+camera.position.set(10, 6, 20)
 scene.add(camera)
 
 // Add AudioListener
@@ -129,7 +129,7 @@ audioLoader.load('/models/fox/sound/Boggis-Bunce-Bean-remix.mp3', (buffer) => {
 
 // Update Models
 gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
-    gltf.scene.scale.set(0.03, 0.03, 0.03);
+    gltf.scene.scale.set(0.1, 0.1, 0.1);
     scene.add(gltf.scene);   
 
     // Add shadow situation for each mesh in the models
@@ -145,9 +145,9 @@ gltfLoader.load('/models/fox/glTF/Fox.gltf', (gltf) => {
 
     // GUI
     // Scale
-    foxFolder.add(gltf.scene.scale, 'x', 0.025, 0.1).name('Scale X')
-    foxFolder.add(gltf.scene.scale, 'y', 0.025, 0.1).name('Scale Y')
-    foxFolder.add(gltf.scene.scale, 'z', 0.025, 0.1).name('Scale Z')
+    foxFolder.add(gltf.scene.scale, 'x', 0.05, 0.5).name('Scale X')
+    foxFolder.add(gltf.scene.scale, 'y', 0.05, 0.5).name('Scale Y')
+    foxFolder.add(gltf.scene.scale, 'z', 0.05, 0.5).name('Scale Z')
 
     // Wireframe
     foxFolder.add(wireframeFox, 'wireframe').name('Wireframe').onChange((value) => {
@@ -207,7 +207,7 @@ scene.add(floor) */
 
 // Floor video
 const floorVideo = document.createElement('video')
-floorVideo.src = '/models/floor/Galaxy.webm'
+floorVideo.src = '/models/floor/Earth.webm'
 floorVideo.load()
 floorVideo.play()
 floorVideo.loop = true
