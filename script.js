@@ -260,6 +260,8 @@ floorFolder.add(floorControls, 'texture', ['Sand', 'Grass', 'Earth', 'Galaxy', '
         textures[value].minFilter = THREE.LinearFilter
         textures[value].magFilter = THREE.LinearFilter
         textures[value].format = THREE.RGBAFormat
+        textures[value].image.play().catch(e => console.error(`Error starting video ${value}:`, e));
+
 
         video.addEventListener('loadeddata', () => {
             const aspectVideo = video.videoWidth / video.videoHeight
