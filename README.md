@@ -1,3 +1,3 @@
 # debug-UI-project
 
-Link of project: https://debug-ui-project.vercel.app/
+For a live experience, visit my [online demo](https://debug-ui-project.vercel.app/).
